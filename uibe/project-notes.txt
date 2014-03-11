@@ -1,0 +1,34 @@
+Installed eclipse Kepler J2EE in directory under ~/
+Instantiated a maven project using http://neonbodega.com/2012/eclipse-maven-tomcat-spring-a-tutorial-part-2/
+Adding dependencies didn't work so used http://stackoverflow.com/questions/14059685/eclipse-maven-search-dependencies-doent-work
+Setup tomcat server
+	Install using software manager 
+Set up tomcat server inside eclipse
+	New server: directory is at /usr/share/tomcat7
+	Failure writing to tomcat directory so copy configuration from windows tomcat conf directory into server/local tomcat7 inside workspace
+Add org.codehaus.jackson.jackson-lgpl as a maven dependency.  This seems to be the whole jackson package under the lesser gnu license.
+More maven fixup:
+	maven created dependencies on the dynamic web module 2.3 but I wanted to use 3.0
+	Changing the settings in Preferences | Project Facets to use dwm3.0 resulted in an error in the java version number
+	Attempting to fix it in the project facets didn't work
+	I used http://stackoverflow.com/a/19387630
+	Then, because I still had a problem, I had to add the maven-compiler-plugin as a dependency
+	Also, needed a step in the build element of the pom that refers to the maven compiler
+Setup web side ide
+	Use webstorm for ui front end
+	webstorm doesn't (naively) recognize jsp files as html and doesn't provide helpful content assist
+	Scheme:
+		set ws deployment directory to be webapp directory in the eclipse project
+			exclude the main html file(s) from the deployment
+			this populates the resources folder in the web app with the contents of the resources folder of the ws project
+			all the included javascript files, css files and libraries will reside under here
+		create main html file in root of ws project
+		add eclipse folder that is linked to source in the ws project folder
+			include the main html file 
+			exclude the resources subfolder
+			also exclude the .idea subfolder
+		Set up file compare between the main welcome jsp in the views folder and the main html file from the ws project linked source
+			We're always going to want to copy source from the html file to the jsp
+			may need to refresh the eclipse project to see updates
+	What this achieves is that the html file and the jsp file use the same relative pointers to included resources
+		
