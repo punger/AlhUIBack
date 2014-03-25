@@ -1,4 +1,4 @@
-package xxx.pju.alhambra.uibe;
+package name.pju.alhambra.uibe;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
