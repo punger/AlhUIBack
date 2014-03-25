@@ -1,4 +1,4 @@
-package xxx.pju.alhambra.resource;
+package name.pju.alhambra.resource;
 
 import java.io.InputStream;
 import java.util.ArrayList;

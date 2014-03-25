@@ -1,4 +1,4 @@
-package xxx.pju.alhambra.resource;
+package name.pju.alhambra.resource;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -1,4 +1,4 @@
-package xxx.pju.alhambra.resource;
+package name.pju.alhambra.resource;
 
 import name.pju.alhambra.CardSet;
 import name.pju.alhambra.Currency;

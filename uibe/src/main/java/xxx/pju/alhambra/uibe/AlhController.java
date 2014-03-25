@@ -10,6 +10,10 @@ import name.pju.alhambra.MarketColor;
 import name.pju.alhambra.PlayerColor;
 import name.pju.alhambra.Point;
 import name.pju.alhambra.Tile;
+import name.pju.alhambra.resource.GameCards;
+import name.pju.alhambra.resource.GameTile;
+import name.pju.alhambra.resource.TileList;
+import name.pju.alhambra.resource.TileListFromXml;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,11 +26,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.WebApplicationContext;
-
-import xxx.pju.alhambra.resource.GameCards;
-import xxx.pju.alhambra.resource.GameTile;
-import xxx.pju.alhambra.resource.TileList;
-import xxx.pju.alhambra.resource.TileListFromXml;
 
 @Controller
 @RequestMapping("/")
