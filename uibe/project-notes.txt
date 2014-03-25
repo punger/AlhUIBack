@@ -31,4 +31,8 @@ Setup web side ide
 			We're always going to want to copy source from the html file to the jsp
 			may need to refresh the eclipse project to see updates
 	What this achieves is that the html file and the jsp file use the same relative pointers to included resources
-		
+Resolved a http 406 error
+	The jsp called $.getJSON but spring couldn't return json
+	The full jackson package was available
+	Solved by removing the full package and only including the jackson mapper maven dependency
+ 

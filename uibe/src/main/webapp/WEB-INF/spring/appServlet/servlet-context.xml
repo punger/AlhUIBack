@@ -9,7 +9,7 @@
 
 	<!-- Scans the classpath of this application for @Components to deploy as beans 
 	May need something to actually fill this. -->
-	<context:component-scan base-package="xxx.pju.alhambra.uibe" ></context:component-scan>
+	<context:component-scan base-package="name.pju.alhambra.uibe" ></context:component-scan>
 
 	<!-- Configures the @Controller programming model -->
 	<mvc:annotation-driven />
