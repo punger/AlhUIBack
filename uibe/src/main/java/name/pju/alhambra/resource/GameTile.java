@@ -7,6 +7,32 @@ import name.pju.alhambra.Tile;
 
 public class GameTile extends Tile {
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((resourceId == null) ? 0 : resourceId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof GameTile))
+			return false;
+		GameTile other = (GameTile) obj;
+		if (resourceId == null) {
+			if (other.resourceId != null)
+				return false;
+		} else if (!resourceId.equals(other.resourceId))
+			return false;
+		return true;
+	}
+
 	private final String resourceId;
 	public String getResourceId() {
 		return resourceId;

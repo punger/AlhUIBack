@@ -20,7 +20,8 @@ public class TileListFromXml {
 
 		Serializer serializer = new Persister();
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		InputStream tileFile = cl.getResourceAsStream("");
+		InputStream tileFile = cl.getResourceAsStream(
+				"name/pju/alhambra/resource/tiledescriptions.xml");
 		TileListFromXml tlx = null;
 		try {
 			tlx = serializer.read(TileListFromXml.class, tileFile);

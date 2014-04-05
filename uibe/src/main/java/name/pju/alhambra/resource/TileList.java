@@ -47,5 +47,11 @@ public class TileList implements BagOfTiles {
 	public GameTile getGarden() {
 		return garden;
 	}
+	public static GameTile getTileById(String ridProbe) {
+		for (GameTile gt : allTiles) {
+			if (gt.getResourceId().equals(ridProbe)) return gt;
+		}
+		return null;
+	}
 
 }
