@@ -40,40 +40,4 @@
 		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
 		<nature>org.eclipse.wst.jsdt.core.jsNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src/main/webapp/WEB-INF/uife</name>
-			<type>2</type>
-			<location>C:/Users/paul/WebstormProjects/uife</location>
-		</link>
-	</linkedResources>
-	<filteredResources>
-		<filter>
-			<id>1394554324263</id>
-			<name>src/main/webapp/WEB-INF/uife</name>
-			<type>30</type>
-			<matcher>
-				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-name-matches-false-false-resources</arguments>
-			</matcher>
-		</filter>
-		<filter>
-			<id>1394554324273</id>
-			<name>src/main/webapp/WEB-INF/uife</name>
-			<type>5</type>
-			<matcher>
-				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-name-matches-false-false-welcome.*</arguments>
-			</matcher>
-		</filter>
-		<filter>
-			<id>1394554324284</id>
-			<name>src/main/webapp/WEB-INF/uife</name>
-			<type>14</type>
-			<matcher>
-				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-name-matches-false-false-.idea</arguments>
-			</matcher>
-		</filter>
-	</filteredResources>
 </projectDescription>

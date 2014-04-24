@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
+import name.pju.alhambra.Alhambra;
 import name.pju.alhambra.Card;
 import name.pju.alhambra.CardSet;
 import name.pju.alhambra.Currency;
@@ -27,16 +28,24 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.google.common.collect.Iterables;
+
 @Controller
 @RequestMapping("/")
 @Scope(WebApplicationContext.SCOPE_SESSION)
 public class AlhController {
+	
+//	static {
+//		ToStringStyle stts = StandardToStringStyle.DEFAULT_STYLE;
+//		stts.
+//	}
 	/**
 	 * Stupid bean to correctly map to json object
 	 */
@@ -48,6 +57,11 @@ public class AlhController {
 		public void setColor(String color) { this.color = color; }
 	}
 	
+	private static class ProfferJ {
+		public ProfferJ() {}
+		public String slot;
+		public CardJ[] offer;
+	}
 	private static class TileJ {
 		TileJ(Tile gtin) { gt = (GameTile) gtin; }
 		public GameTile gt;
@@ -74,6 +88,8 @@ public class AlhController {
 	private static class CardJ {
 		public String color;
 		public int value;
+		@SuppressWarnings("unused")
+		public CardJ() {}
 		public CardJ(Card c) {
 			color = c.getColor().toString();
 			value = c.value();
@@ -92,6 +108,9 @@ public class AlhController {
 			} catch (IllegalArgumentException e) {
 				return null;
 			}
+		}
+		public String toString() {
+			return "(color: "+ color + ", value: "+value+")";
 		}
 	}
 	
@@ -118,6 +137,48 @@ public class AlhController {
 		public static StatusJ succeed(PlayerColor pc) {
 			return new StatusJ(true, pc.name(), "");
 		}
+		public static StatusJ succeed(String m) {
+			return new StatusJ(true, "", m);
+		}
+	}
+	
+	private static class BoardJ {
+		public int minX;
+		public int maxX;
+		public int minY;
+		public int maxY;
+		public static class TilePosJ {
+			public TilePosJ(int x, int y, TileJ t) {
+				this.x = x;
+				this.y = y;
+				this.t = t;
+			}
+			public int x;
+			public int y;
+			public TileJ t;
+		}
+		public TilePosJ [] board;
+		public static BoardJ fromBoard(Alhambra alh) {
+			BoardJ b = new BoardJ();
+			b.minX = alh.getMins().getX();
+			b.minY = alh.getMins().getY();
+			b.maxX = alh.getMaxs().getX();
+			b.maxY = alh.getMaxs().getY();
+			ArrayList<TilePosJ> outTilejs = new ArrayList<TilePosJ>();
+			for (int x = b.minX + 1; x < b.maxX; x++) {
+				for (int y = b.minY + 1; y < b.maxY; y++) {
+					Tile t = alh.getTileArray()[x][y];
+					if (t != null) {
+						TileJ tj = new TileJ(t);
+						TilePosJ tpj = new TilePosJ(x, y, tj);
+						outTilejs.add(tpj);
+					}
+				}
+			}
+			b.board = outTilejs.toArray(new TilePosJ[0]); 
+			return b;
+		}
+		
 	}
 	
     protected final Log logger = LogFactory.getLog(getClass());
@@ -133,7 +194,10 @@ public class AlhController {
     @RequestMapping(method = RequestMethod.GET)
     public String hello(ModelMap model) {
     	logger.info("At welcome");
-        return "welcome";
+//    	logger.info("WHere is wuava?\n"+
+//    		    Iterables.class.getProtectionDomain().getCodeSource().getLocation()
+//    		);
+    	return "welcome";
     }
     
     /**
@@ -202,28 +266,40 @@ public class AlhController {
     }
     /**
      * The current player wants to buy a tile from the market with these cards
-     * @param paySet subset of his hand the player wants to pay with
-     * @param slot the color of market stall that holds the tile he wants
+     * @param proffer 
      * @return the tile if his offer is accepted and a garden otherwise
      */
     @RequestMapping(value="/buytile")
-    public @ResponseBody TileJ buyTile(
-    		@RequestParam CardJ paySet[], 
-    		@RequestParam String slot) 
+    public @ResponseBody StatusJ buyTile(
+    		@RequestBody ProfferJ proffer)
     {
+		logger.info("Offer to buy tile at slot " + proffer.slot
+				+ " with offer " + Arrays.toString(proffer.offer));
     	Payment offer = new Payment();
-    	for (CardJ cin : paySet) {
+    	for (CardJ cin : proffer.offer) {
     		offer.addCard(CardJ.makeCard(cin));
     	}
-    	Tile t = game.getCurPlayer().buy(MarketColor.valueOf(slot), offer);
+    	MarketColor desiredSlot = MarketColor.valueOf(proffer.slot);
+    	Tile t = game.getCurPlayer().buy(desiredSlot, offer);
     	if (t == null) {
-    		return new TileJ(game.getGarden());
+    		logger.error("Couldn't buy tile " + 
+    				game.getMarket().whatsOnOffer(desiredSlot).toString() +
+    				" at slot " + proffer.slot + 
+    				" from "+ game.getMarket().toString() + 
+    				" using proffer "+ offer.toString()
+    				);
+    		return StatusJ.fail("Couldn't buy tile");
     	}
-    	return new TileJ(t);
+    	logger.info("bought tile "+t.toString());
+    	if (game.getCurPlayer().hasActions()) 
+    		return StatusJ.succeed(game.getCurPlayer().getMeeple());
+    	return StatusJ.succeed("next");
     }
     
     @RequestMapping(value="/takecards")
-    public @ResponseBody StatusJ take(@RequestParam CardJ[] cards) {
+    public @ResponseBody StatusJ take(@RequestBody CardJ[] cards) {
+    	logger.info("takecards arg "+Arrays.toString(cards));
+//		return StatusJ.succeed(game.getCurPlayer().getMeeple());
     	CardSet cs = new CardSet();
     	for (CardJ cin : cards) {
     		cs = game.getExchange().claim(CardJ.makeCard(cin), cs);
@@ -231,8 +307,10 @@ public class AlhController {
     	if (cs.getCards().size() == cards.length) {
     		Player curP = game.getCurPlayer();
     		curP.addFromExchange(cs);
-    		return StatusJ.succeed(null);
-    	} 
+    		return StatusJ.succeed(game.getCurPlayer().getMeeple());
+    	}
+		logger.error("Failed taking cards " + cs.toString() + " from "
+				+ game.getExchange().toString());
     	game.getExchange().restoreClaimedCards(cs);
     	return StatusJ.fail("Couldn't claim all cards from the exchange");
     }
@@ -241,8 +319,19 @@ public class AlhController {
     	return null;
     }
     
-    public PointJ[] candidateLocations(String player, String tileId) {
-    	return null;
+    @RequestMapping(value="/possibleLocations")
+    public @ResponseBody PointJ[] candidateLocations(@RequestParam String tile) {
+    	logger.info("Possible locations for tile "+tile);
+    	GameTile t = TileList.getTileById(tile);
+    	if (t == null) return null;
+    	List <Point> locs = game.getCurPlayer().getAlh().getValidLocations(t);
+    	if (locs == null || locs.size() == 0) return null;
+    	PointJ pLocsJ[] = new PointJ[locs.size()];
+    	int i = 0;
+    	for (Point p : locs) {
+    		pLocsJ[i++] = new PointJ(p);
+    	}
+    	return pLocsJ;
     }
     
     @RequestMapping(value="/exchange")
@@ -257,6 +346,14 @@ public class AlhController {
     	PlayerColor pc = PlayerColor.valueOf(player);
     	Player p = game.getPlayer(pc);
     	return CardJ.fromCardset(p.getHand());
+    }
+    
+    @RequestMapping(value="/playerboard")
+    public @ResponseBody BoardJ getBoard(@RequestParam String player) {
+    	logger.info("player board for "+player);
+    	PlayerColor pc = PlayerColor.valueOf(player);
+    	Player p = game.getPlayer(pc);
+    	return BoardJ.fromBoard(p.getAlh());
     }
     
     /**

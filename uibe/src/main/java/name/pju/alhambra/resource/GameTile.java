@@ -2,6 +2,8 @@ package name.pju.alhambra.resource;
 
 import java.util.Set;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import name.pju.alhambra.Direction;
 import name.pju.alhambra.Tile;
 
@@ -53,6 +55,14 @@ public class GameTile extends Tile {
 	public GameTile(String rid, Family color, int cost, Set<Direction> w) {
 		super(color, cost, w);
 		resourceId = rid;
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).
+				append("rid", resourceId).
+				appendSuper(super.toString ()).
+				toString();
 	}
 
 }
