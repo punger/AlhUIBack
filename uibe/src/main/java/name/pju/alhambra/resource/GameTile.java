@@ -41,10 +41,12 @@ public class GameTile extends Tile {
 	}
 
 	/**
-	 * This constructor only works when instantiating the garden tile.  Note 
-	 * that even though you don't need to say it's a garden tile, you still 
-	 * have to provide the resource id for the garden tile.  We can't find it 
-	 * automatically.
+	 * This constructor creates non-Alhambra tiles.  These include the garden
+	 * tile as well as other unplayable tiles like tile backs used to show an
+	 * empty market space.  You don't need to provide information usually
+	 * needed for playable tiles.  You must provide a resource id both because
+	 * it differentiates this tile from other tiles, but also because it 
+	 * corresponds to the image that will be displayed.
 	 * @param rid resource id of the tile being initialized
 	 */
 	public GameTile(String rid) {

@@ -1,5 +1,6 @@
 package name.pju.alhambra.resource;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Stack;
@@ -9,6 +10,7 @@ import name.pju.alhambra.Tile;
 
 public class TileList implements BagOfTiles {
 	private static Collection<GameTile> allTiles = null;
+	private static Collection<GameTile> unplayable = null;
 	private Stack<GameTile> gameBag = null;
 	private static GameTile garden = null;
 	@Override
@@ -26,13 +28,17 @@ public class TileList implements BagOfTiles {
 	}
 	private void assignAllTiles(Collection<GameTile> ts) {
 		if (ts == null) return;
+		unplayable = new ArrayList<GameTile>();
 		for (GameTile t : ts) {
 			if (t.getColor() == Tile.Family.garden) {
 				garden = t;
-				break;
+				unplayable.add(garden);
+//				break;
+			} else if (t.getColor() == Tile.Family.other) {
+				unplayable.add(t);
 			}
 		}
-		ts.remove(garden);
+		ts.removeAll(unplayable);
 		allTiles = ts;
 	}
 	public TileList(Collection<GameTile> ts) {
@@ -47,8 +53,17 @@ public class TileList implements BagOfTiles {
 	public GameTile getGarden() {
 		return garden;
 	}
+	/**
+	 * Find a concrete tile from the list of all known tiles that matches by
+	 * resource id.
+	 * @param ridProbe indicates the name of a tile
+	 * @return a GameTile with the given resource id
+	 */
 	public static GameTile getTileById(String ridProbe) {
 		for (GameTile gt : allTiles) {
+			if (gt.getResourceId().equals(ridProbe)) return gt;
+		}
+		for (GameTile gt : unplayable) {
 			if (gt.getResourceId().equals(ridProbe)) return gt;
 		}
 		return null;

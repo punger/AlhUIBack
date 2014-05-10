@@ -11,14 +11,16 @@
     <link rel="stylesheet/less" type="text/css" href="resources/less/style.less" />
 
 
-    <script type="application/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-    <script type="application/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <!--<script type="application/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>-->
     <script type="application/javascript" src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.7.0/less.min.js"></script>
-    <script type="application/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <!--<script type="application/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>-->
 
+    <script type="application/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+    <script type="application/javascript" src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
     <script type="application/javascript" src="bower_components/beebole-pure/libs/pure.js"></script>
     <script type="application/javascript" src="bower_components/async/lib/async.js"></script>
-    <script type="application/javascript" src="bower_components/stapes/stapes.js"></script>
+
+    <script type="application/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 
     <script type="application/javascript" src="resources/playerselect.js"></script>
     <script type="application/javascript" src="resources/game.js"></script>
@@ -29,7 +31,7 @@
     <script type="application/javascript" src="resources/market.js"></script>
     <script type="application/javascript" src="resources/exchange.js"></script>
     <script type="application/javascript" src="resources/cardset.js"></script>
-    <script type="application/javascript" src="resources/reserve.js"></script>
+    <!--<script type="application/javascript" src="resources/reserve.js"></script>-->
     <!--
     <script type="application/javascript" src="resources/main.js"></script>
     -->
@@ -72,6 +74,9 @@ $(function() {
                         });
             },
             function(players, cb) {
+                if (!players || players.length == 0) {
+                    players = ["black", "red", "orange"];
+                }
                 $.ajax("startgame",
                     {
                         data: { "players": players},
