@@ -35,8 +35,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.google.common.collect.Iterables;
-
 @Controller
 @RequestMapping("/")
 @Scope(WebApplicationContext.SCOPE_SESSION)
@@ -377,7 +375,8 @@ public class AlhController {
 			logger.error("Player "+game.getCurPlayer().getMeeple().name()+"cannot take cards because he has no actions left.");
 			return StatusJ.fail("No more actions.");
 		}
-		// return StatusJ.succeed(game.getCurPlayer().getMeeple());
+		if (cards.length == 0)
+			return StatusJ.fail("Omitted to ask for any cards.  Now who's a silly person?");
 		CardSet cs = new CardSet();
 		for (CardJ cin : cards) {
 			cs = game.getExchange().claim(CardJ.makeCard(cin), cs);
@@ -488,9 +487,10 @@ public class AlhController {
 
 	@RequestMapping(value = "/playerhand")
 	public @ResponseBody CardJ[] getHand(@RequestParam String player) {
-		logger.info("player hand for " + player);
+		logger.info("player hand for " + player+": ");
 		PlayerColor pc = PlayerColor.valueOf(player);
 		Player p = game.getPlayer(pc);
+		logger.info(p.getHand().toString());
 		return CardJ.fromCardset(p.getHand());
 	}
 
@@ -503,7 +503,8 @@ public class AlhController {
 	}
 
 	/**
-	 * Ends the current player's turn. <br>
+	 * Ends the current player's turn. 
+	 * <p>
 	 * Success means that the next player will go. Failure means that something
 	 * else happens, either an intermediate scoring round or the end of the
 	 * game. If a failure occurs, then the message is not one of the expected

@@ -211,14 +211,6 @@ $(function() {
             <td id="playerbox0"></td>
         </tr>
     </table>
-    <div class="row-fluid brdtblregion">
-        <div  class="col-md-2">
-        </div>
-        <div class="col-md-4">
-        </div>
-        <div class="col-md-5">
-        </div>
-    </div>
 </div>
 <!--<div class="container-fluid">-->
     <!--<div id="anchor"></div>-->
